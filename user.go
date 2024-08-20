@@ -30,7 +30,7 @@ type RealDebridUser struct {
 }
 
 // Returns some informations on the current user.
-func getUser(client *RealDebridClient) (*RealDebridUser, error) {
+func (c *RealDebridClient) GetUser(client *RealDebridClient) (*RealDebridUser, error) {
 	req, err := client.newRequest(http.MethodGet, "/user", nil, "", nil)
 
 	if err != nil {
@@ -47,8 +47,4 @@ func getUser(client *RealDebridClient) (*RealDebridUser, error) {
 
 	return &user, nil
 
-}
-
-func (c *RealDebridClient) GetUser() (*RealDebridUser, error) {
-	return getUser(c)
 }

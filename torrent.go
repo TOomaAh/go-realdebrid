@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -35,6 +36,21 @@ type TorrentOptions struct {
 	Page   int           `json:"page,omitempty"`
 	Limit  int           `json:"limit,omitempty"`
 	Filter TorrentFilter `json:"filter,omitempty"`
+}
+
+type Link struct {
+	ID       string `json:"id"`
+	Filename string `json:"filename"`
+	MimeType string `json:"mimeType"`
+	Link     string `json:"link"`
+	Host     string `json:"host"`
+	Download string `json:"download"`
+
+	Chunks   int64 `json:"chunks"`
+	Crc      int64 `json:"crc"`
+	FileSize int64 `json:"fileSize"`
+
+	Streamable int `json:"streamable"`
 }
 
 // Get user torrents list
@@ -116,4 +132,27 @@ func (c *RealDebridClient) AddTorrent(file io.Reader) error {
 
 	return nil
 
+}
+
+func (t *RealDebridClient) DebridTorrent(link string) (*Link, error) {
+	var l Link
+	header := http.Header{}
+	header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	body := url.Values{}
+	body.Set("link", link)
+
+	req, err := t.newRequest(http.MethodPost, "/unrestrict/link", header, "", strings.NewReader(body.Encode()))
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = t.do(req, &l)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &l, nil
 }
