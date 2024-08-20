@@ -184,3 +184,20 @@ func (t *RealDebridClient) AcceptTorrent(id string) error {
 
 	return nil
 }
+
+func (t *RealDebridClient) DeleteTorrent(id string) error {
+	req, err := t.newRequest(http.MethodDelete, "/torrents/"+id, nil, "", nil)
+
+	if err != nil {
+		return err
+	}
+
+	err = t.do(req, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
