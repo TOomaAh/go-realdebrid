@@ -162,3 +162,25 @@ func (t *RealDebridClient) DebridTorrent(link string) (*Link, error) {
 
 	return &l, nil
 }
+
+func (t *RealDebridClient) AcceptTorrent(id string) error {
+	header := http.Header{}
+	header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	body := url.Values{}
+	body.Set("files", "all")
+
+	req, err := t.newRequest(http.MethodPost, "/torrents/selectFiles/"+id, header, "", strings.NewReader(body.Encode()))
+
+	if err != nil {
+		return err
+	}
+
+	err = t.do(req, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
