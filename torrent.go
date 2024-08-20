@@ -53,6 +53,11 @@ type Link struct {
 	Streamable int `json:"streamable"`
 }
 
+type AddTorrent struct {
+	Id  string `json:"id"`
+	Uri string `json:"uri"`
+}
+
 // Get user torrents list
 func (c *RealDebridClient) GetTorrents(options *TorrentOptions) ([]Torrent, error) {
 
@@ -115,22 +120,23 @@ func (c *RealDebridClient) GetTorrent(id string) (*Torrent, error) {
 }
 
 // Add a torrent file to download, return a 201 HTTP code.
-func (c *RealDebridClient) AddTorrent(file io.Reader) error {
+func (c *RealDebridClient) AddTorrent(file io.Reader) (*AddTorrent, error) {
+	var addTorrent AddTorrent
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/x-bittorrent")
 	req, err := c.newRequest(http.MethodPost, "/torrents/addTorrent", headers, "", file)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = c.do(req, nil)
+	err = c.do(req, &addTorrent)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &addTorrent, nil
 
 }
 
