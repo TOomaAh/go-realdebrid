@@ -1,6 +1,7 @@
 package gorealdebrid
 
 import (
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -69,7 +70,7 @@ func (c *RealDebridClient) GetTorrents(options *TorrentOptions) ([]Torrent, erro
 
 	var torrents []Torrent
 
-	err = c.get(req, &torrents)
+	err = c.do(req, &torrents)
 
 	if err != nil {
 		return nil, err
@@ -88,11 +89,31 @@ func (c *RealDebridClient) GetTorrent(id string) (*Torrent, error) {
 
 	var torrent Torrent
 
-	err = c.get(req, &torrent)
+	err = c.do(req, &torrent)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &torrent, nil
+}
+
+// Add a torrent file to download, return a 201 HTTP code.
+func (c *RealDebridClient) AddTorrent(file io.Reader) error {
+	headers := http.Header{}
+	headers.Set("Content-Type", "application/x-bittorrent")
+	req, err := c.newRequest(http.MethodPost, "/torrents/addTorrent", headers, "", file)
+
+	if err != nil {
+		return err
+	}
+
+	err = c.do(req, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

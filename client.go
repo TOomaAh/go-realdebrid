@@ -46,7 +46,7 @@ func (c *RealDebridClient) newRequest(method, path string, headers http.Header, 
 	return req, nil
 }
 
-func (c *RealDebridClient) get(req *http.Request, v interface{}) error {
+func (c *RealDebridClient) do(req *http.Request, v interface{}) error {
 	resp, err := c.client.Do(req)
 
 	if err != nil {
@@ -76,5 +76,4 @@ func (c *RealDebridClient) get(req *http.Request, v interface{}) error {
 	}
 
 	return nil
-
 }

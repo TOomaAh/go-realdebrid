@@ -39,7 +39,7 @@ func getUser(client *RealDebridClient) (*RealDebridUser, error) {
 
 	var user RealDebridUser
 
-	err = client.get(req, &user)
+	err = client.do(req, &user)
 
 	if err != nil {
 		return nil, err
