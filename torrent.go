@@ -124,7 +124,7 @@ func (c *RealDebridClient) AddTorrent(file io.Reader) (*AddTorrent, error) {
 	var addTorrent AddTorrent
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/x-bittorrent")
-	req, err := c.newRequest(http.MethodPost, "/torrents/addTorrent", headers, "", file)
+	req, err := c.newRequest(http.MethodPut, "/torrents/addTorrent", headers, "", file)
 
 	if err != nil {
 		return nil, err
